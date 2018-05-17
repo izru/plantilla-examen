@@ -12,7 +12,7 @@
 	ArrayList<Usuario> usuarios = (ArrayList<Usuario>)request.getAttribute("usuarios");	
 %>
 
-
+${usuarios}
 
 <div class="row">
 

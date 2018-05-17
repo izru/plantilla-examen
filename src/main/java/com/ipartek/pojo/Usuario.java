@@ -2,21 +2,22 @@ package com.ipartek.pojo;
 
 public class Usuario {
 
-	private int id;
+	private int idUsuario;
 	private String nombre;
+	private String apellido;
 
 	public Usuario() {
 		super();
-		this.id = -1;
+		this.idUsuario = -1;
 		this.nombre = "";
 	}
 
-	public int getId() {
-		return id;
+	public int getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	public String getNombre() {
@@ -26,10 +27,21 @@ public class Usuario {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + "]";
+		return "Usuario [idUsuario=" + idUsuario + ", nombre=" + nombre + ", apellido=" + apellido + "]";
 	}
+
+	
 
 }

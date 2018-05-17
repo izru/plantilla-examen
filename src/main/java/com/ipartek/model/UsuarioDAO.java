@@ -34,7 +34,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	@Override
 	public ArrayList<Usuario> getAll() {
 		ArrayList<Usuario> lista = new ArrayList<Usuario>();
-		String sql = "SELECT `id`, descripcion FROM prueba-examen.usuario ORDER BY nombre ASC LIMIT 500";
+		String sql = "SELECT idUsuario, nombre, apellido FROM usuario ORDER BY nombre ASC LIMIT 500";
 
 		try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement pst = con.prepareStatement(sql);
@@ -53,7 +53,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	@Override
 	public Usuario getById(int id) {
 		Usuario usuario = new Usuario();
-		String sql = "SELECT `id`, descripcion FROM prueba-examen.usuario WHERE `id` = ?;";
+		String sql = "SELECT idUsuario, nombre, apellido FROM usuario WHERE idUsuario = ?;";
 
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
 			pst.setInt(1, id);
@@ -71,7 +71,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	public ArrayList<Usuario> getByName(String search) {
 
 		ArrayList<Usuario> lista = new ArrayList<Usuario>();
-		String sql = "SELECT id, descripcion FROM prueba-examen.usuario WHERE nombre LIKE ? ORDER BY id DESC LIMIT 500;";
+		String sql = "SELECT idUsuario, nombre, apellido FROM usuario WHERE nombre LIKE ? ORDER BY idUsuario DESC LIMIT 500;";
 
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
 			pst.setString(1, "%" + search + "%");
@@ -94,7 +94,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 			// Sanitize nombre
 			pojo.setNombre(Utilidades.limpiarEspacios(pojo.getNombre()));
 
-			if (pojo.getId() == -1) {
+			if (pojo.getIdUsuario() == -1) {
 				resultado = crear(pojo);
 			} else {
 				resultado = modificar(pojo);
@@ -107,12 +107,13 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	private boolean modificar(Usuario pojo) throws MysqlDataTruncation, MySQLIntegrityConstraintViolationException {
 		boolean resultado = false;
 
-		String sql = "UPDATE prueba-examen.usuario SET nombre= ? WHERE  id= ?;";
+		String sql = "UPDATE usuario SET nombre= ?, apellido =? WHERE  idUsuario= ?;";
 
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
 
 			pst.setString(1, pojo.getNombre());
-			pst.setInt(2, pojo.getId());
+			pst.setString(2, pojo.getApellido());
+			pst.setInt(3, pojo.getIdUsuario());
 
 			resultado = doSave(pst, pojo);
 
@@ -130,11 +131,12 @@ public class UsuarioDAO implements Persistible<Usuario> {
 
 	private boolean crear(Usuario pojo) throws MySQLIntegrityConstraintViolationException, MysqlDataTruncation {
 		boolean resultado = false;
-		String sql = "INSERT INTO prueba-examen.usuario (nombre) VALUES (?);";
+		String sql = "INSERT INTO usuario (nombre, apellido) VALUES (?, ?);";
 
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
 
 			pst.setString(1, pojo.getNombre());
+			pst.setString(2, pojo.getApellido());
 
 			resultado = doSave(pst, pojo);
 
@@ -160,7 +162,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 			if (affectedRows == 1) {
 				try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						pojo.setId(generatedKeys.getInt(1));
+						pojo.setIdUsuario(generatedKeys.getInt(1));
 					}
 				}
 				resultado = true;
@@ -181,7 +183,7 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	@Override
 	public boolean delete(int id) {
 		boolean resultado = false;
-		String sql = "DELETE FROM prueba-examen.usuario WHERE  `id`= ?;";
+		String sql = "DELETE FROM usuario WHERE  idUsuario= ?;";
 
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql);) {
 
@@ -202,8 +204,9 @@ public class UsuarioDAO implements Persistible<Usuario> {
 	@Override
 	public Usuario mapper(ResultSet rs) throws SQLException {
 		Usuario usuario = new Usuario();
-		usuario.setId(rs.getInt("id"));
+		usuario.setIdUsuario(rs.getInt("idUsuario"));
 		usuario.setNombre(rs.getString("nombre"));
+		usuario.setApellido(rs.getString("apellido"));
 		return usuario;
 	}
 

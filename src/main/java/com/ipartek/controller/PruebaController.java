@@ -27,14 +27,15 @@ public class PruebaController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Usuario> materiales = new ArrayList<Usuario>();
+		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+		
 		Alert alert = null;
 
 		try {
 
 			UsuarioDAO dao = UsuarioDAO.getInstance();
-			materiales = dao.getAll();
-
+			usuarios = dao.getAll();
+System.out.println(usuarios);
 		} catch (Exception e) {
 			alert = new Alert();
 			e.printStackTrace();
@@ -42,9 +43,9 @@ public class PruebaController extends HttpServlet {
 		} finally {
 			// enviar atributos a la JSP
 			request.setAttribute("alert", alert);
-			request.setAttribute("materiales", materiales);
+			request.setAttribute("usuarios", usuarios);
 			// ir a la JSP
-			request.getRequestDispatcher("materiales.jsp").forward(request, response);
+			request.getRequestDispatcher("usuario.jsp").forward(request, response);
 		}
 	}
 
